@@ -16,6 +16,7 @@
         libX11
         libXft
         libXinerama
+        pango
 
         # libinput
         # libxcb

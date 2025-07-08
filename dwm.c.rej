@@ -1,0 +1,10 @@
+diff a/dwm.c b/dwm.c	(rejected hunks)
+@@ -61,7 +61,7 @@
+ enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
+ enum { SchemeNorm, SchemeSel }; /* color schemes */
+ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
+-       NetWMFullscreen, NetActiveWindow, NetWMWindowType,
++       NetWMFullscreen, NetWMSticky, NetActiveWindow, NetWMWindowType,
+        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
+ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
+ enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
