@@ -1,0 +1,21 @@
+diff a/dwm.c b/dwm.c	(rejected hunks)
+@@ -1717,7 +1908,18 @@ togglebar(const Arg *arg)
+ {
+ 	selmon->showbar = !selmon->showbar;
+ 	updatebarpos(selmon);
+-	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
++	resizebarwin(selmon);
++	if (showsystray) {
++		XWindowChanges wc;
++		if (!selmon->showbar)
++			wc.y = -bh;
++		else if (selmon->showbar) {
++			wc.y = 0;
++			if (!selmon->topbar)
++				wc.y = selmon->mh - bh;
++		}
++		XConfigureWindow(dpy, systray->win, CWY, &wc);
++	}
+ 	arrange(selmon);
+ }
+ 
