@@ -16,6 +16,7 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int focusonwheel       = 0;
+static const float toggle_float_ratio = 0.5;   /* weight and height ratio of toggle floating client */
 static const char font[]            = "Hack Nerd Font Mono 14";
 static const char dmenufont[]       = "Hack Nerd Font Mono:size=14";
 static const char col_gray1[]       = "#2e3440"; // UnFocus bg
@@ -30,6 +31,9 @@ static const char col_norm_bd[]      = "#2e3440";
 static const char col_sel_fg[]       = "#eceff4";
 static const char col_sel_bg[]       = "#5e81ac";
 static const char col_sel_bd[]       = "#eceff4";
+static const char col_occ_fg[]       = "#eceff4";
+static const char col_occ_bg[]       = "#4c566a";
+static const char col_occ_bd[]       = "#eceff4";
 static const char col_title_fg[]     = "#eceff4";
 static const char col_title_bg[]     = "#2e3440";
 static const char col_title_bd[]     = "#eceff4";
@@ -46,6 +50,7 @@ static const char *colors[][3]      = {
   [SchemeTitle]    = { col_title_fg, col_title_bg, col_title_bd }, // client title
   [SchemeSystray]  = { col_systray_fg, col_systray_bg, col_systray_bd }, // systray
   [SchemeStatus]   = { col_status_fg, col_status_bg, col_status_bd }, // status
+  [SchemeOcc]  = { col_occ_fg, col_occ_bg, col_occ_bd },
 };
 
 /* tagging */
@@ -133,7 +138,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
+	// { MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[0]} },
 	// { MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
@@ -142,6 +147,8 @@ static const Key keys[] = {
 	// { MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+	{ MODKEY,                       XK_Right,  viewnext,       {0} },
+	{ MODKEY,                       XK_Left,   viewprev,       {0} },
 	// { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	// { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	// { MODKEY,                       XK_period, focusmon,       {.i = +1 } },

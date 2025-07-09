@@ -76,7 +76,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeTitle, SchemeSystray, SchemeStatus, SchemeLast }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeTitle, SchemeSystray, SchemeStatus, SchemeOcc, SchemeLast }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayOrientationHorz,
        NetWMFullscreen, NetWMSticky, NetActiveWindow, NetWMWindowType,
@@ -284,6 +284,8 @@ static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
+static void viewnext(const Arg *arg);
+static void viewprev(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
 static Client *wintosystrayicon(Window w);
@@ -904,12 +906,18 @@ drawbar(Monitor *m)
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		w = TEXTW(tags[i]);
-		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+		// drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+    if (m->tagset[m->seltags] & 1 << i)
+      drw_setscheme(drw, scheme[SchemeSel]);           // focus tag
+    else if (occ & 1 << i)
+      drw_setscheme(drw, scheme[SchemeOcc]);           // occupy tag
+    else
+      drw_setscheme(drw, scheme[SchemeNorm]);          // empty tag
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i, False);
-		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
+		// if (occ & 1 << i)
+		// 	drw_rect(drw, x + boxs, boxs, boxw, boxw,
+		// 		m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+		// 		urg & 1 << i);
 		x += w;
 	}
 	w = TEXTW(m->ltsymbol);
@@ -920,8 +928,8 @@ drawbar(Monitor *m)
 		if (m->sel) {
 			drw_setscheme(drw, scheme[m == selmon ? SchemeTitle : SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0, False);
-			if (m->sel->isfloating)
-				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
+			// if (m->sel->isfloating)
+			// 	drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
 			drw_rect(drw, x, 0, w, bh, 1, 1);
@@ -2182,12 +2190,13 @@ togglefloating(const Arg *arg)
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
 	if (selmon->sel->isfloating) {
-    // Auto Center
-		selmon->sel->x = selmon->mx + (selmon->mw - WIDTH(selmon->sel)) / 2;
-		selmon->sel->y = selmon->my + (selmon->mh - HEIGHT(selmon->sel)) / 2;
+    int nw = selmon->ww * toggle_float_ratio;   /* new width  */
+    int nh = selmon->wh * toggle_float_ratio;   /* new height */
 
-		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
-			selmon->sel->w, selmon->sel->h, 0);
+    int nx = selmon->wx + (selmon->ww - nw) / 2;
+    int ny = selmon->wy + (selmon->wh - nh) / 2;
+
+    resize(selmon->sel, nx, ny, nw, nh, 0);
   }
 	arrange(selmon);
 }
@@ -2742,6 +2751,30 @@ view(const Arg *arg)
 	focus(NULL);
 #endif
 	arrange(selmon);
+}
+
+void
+viewnext(const Arg *arg)
+{
+  int cur = selmon->pertag->curtag;
+  if (cur == 0)
+    return;
+  int next = (cur % LENGTH(tags)) + 1;
+
+  Arg a = {.ui = 1u << (next - 1)};
+  view(&a);
+}
+
+void
+viewprev(const Arg *arg)
+{
+  int cur = selmon->pertag->curtag;
+  if (cur == 0)
+    return;
+  int prev = (cur + LENGTH(tags) - 2) % LENGTH(tags) + 1;
+
+  Arg a = {.ui = 1u << (prev - 1)};
+  view(&a);
 }
 
 Client *
