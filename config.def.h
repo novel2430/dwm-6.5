@@ -1,6 +1,10 @@
 /* See LICENSE file for copyright and license details. */
 #include <X11/XF86keysym.h>
 
+/* My Smart View */
+#define SMART_TAGVIEW 1
+#define REMEMBER_FOCUS 1
+
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -15,14 +19,33 @@ static const int focusonwheel       = 0;
 static const char font[]            = "Hack Nerd Font Mono 14";
 static const char dmenufont[]       = "Hack Nerd Font Mono:size=14";
 static const char col_gray1[]       = "#2e3440"; // UnFocus bg
-static const char col_gray2[]       = "#3b4252"; // UnFocus border
+static const char col_gray2[]       = "#2e3440"; // UnFocus border
 static const char col_gray3[]       = "#eceff4"; // UnFocus fg
 static const char col_gray4[]       = "#eceff4"; // Focus fg
 static const char col_cyan[]        = "#5e81ac"; // Focus bg, border
+
+static const char col_norm_fg[]      = "#eceff4";
+static const char col_norm_bg[]      = "#2e3440";
+static const char col_norm_bd[]      = "#2e3440";
+static const char col_sel_fg[]       = "#eceff4";
+static const char col_sel_bg[]       = "#5e81ac";
+static const char col_sel_bd[]       = "#eceff4";
+static const char col_title_fg[]     = "#eceff4";
+static const char col_title_bg[]     = "#2e3440";
+static const char col_title_bd[]     = "#eceff4";
+static const char col_systray_fg[]   = "#eceff4";
+static const char col_systray_bg[]   = "#5e81ac";
+static const char col_systray_bd[]   = "#eceff4";
+static const char col_status_fg[]    = "#eceff4";
+static const char col_status_bg[]    = "#2e3440";
+static const char col_status_bd[]    = "#eceff4";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  "#eceff4"  },
+	[SchemeNorm] = { col_norm_fg, col_norm_bg, col_norm_bd },
+	[SchemeSel]  = { col_sel_fg, col_sel_bg, col_sel_bd },
+  [SchemeTitle]    = { col_title_fg, col_title_bg, col_title_bd }, // client title
+  [SchemeSystray]  = { col_systray_fg, col_systray_bg, col_systray_bd }, // systray
+  [SchemeStatus]   = { col_status_fg, col_status_bg, col_status_bd }, // status
 };
 
 /* tagging */
@@ -134,24 +157,24 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
-	{ MODKEY,                       XK_s,      togglesticky,   {0} },
+	{ MODKEY|ShiftMask,             XK_s,      togglesticky,   {0} },
 };
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
-	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	// { ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
+	// { ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+	// { ClkWinTitle,          0,              Button2,        zoom,           {0} },
+	// { ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY|ShiftMask, Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY|ShiftMask, Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY|ShiftMask, Button3,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
-	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	// { ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
+	// { ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
 static const char *ipcsockpath = "/tmp/dwm.sock";
