@@ -4,6 +4,7 @@
 /* My Smart View */
 #define SMART_TAGVIEW 1
 #define REMEMBER_FOCUS 1
+#define SHOW_WINDOW_TITLE 0
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */

@@ -927,7 +927,9 @@ drawbar(Monitor *m)
 	if ((w = m->ww - tw - stw - x) > bh) {
 		if (m->sel) {
 			drw_setscheme(drw, scheme[m == selmon ? SchemeTitle : SchemeNorm]);
+#if SHOW_WINDOW_TITLE
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0, False);
+#endif
 			// if (m->sel->isfloating)
 			// 	drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
 		} else {
