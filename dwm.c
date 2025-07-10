@@ -983,7 +983,7 @@ focus(Client *c)
 	}
 	selmon->sel = c;
 #if REMEMBER_FOCUS
-  selmon->pertag->prevclient[selmon->pertag->curtag] = selmon->sel;
+  selmon->pertag->prevclient[selmon->pertag->curtag] = c;
 #endif
 	drawbars();
 }
@@ -1231,6 +1231,7 @@ killclient(const Arg *arg)
 {
 	if (!selmon->sel)
 		return;
+
 
 	if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0 , 0, 0)) {
 		XGrabServer(dpy);
@@ -2743,13 +2744,16 @@ view(const Arg *arg)
 #if REMEMBER_FOCUS
   Client *fc = selmon->pertag->prevclient[selmon->pertag->curtag];
   if (fc && ISVISIBLE(fc)) {
-    focus(fc);
-  } else {
-    focus(NULL);
+    for (Client *c = selmon->clients; c; c = c->next) {
+      if (c == fc) {
+        focus(fc);
+        arrange(selmon);
+        return;
+      }
+    }
   }
-#else
-	focus(NULL);
 #endif
+	focus(NULL);
 	arrange(selmon);
 }
 
